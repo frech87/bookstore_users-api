@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/frech87/bookstore_users-api/domain/users"
+	"github.com/frech87/bookstore_users-api/utils/crypto_utils"
 	"github.com/frech87/bookstore_users-api/utils/errors"
 )
 
@@ -18,6 +19,18 @@ type userServiceInterface interface {
 	UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr)
 	DeleteUser(userId int64) *errors.RestErr
 	SearchUser(status string) (users.Users, *errors.RestErr)
+	Login(request users.LoginRequest) (*users.User, *errors.RestErr)
+}
+
+func (s *userService) Login(request users.LoginRequest) (*users.User, *errors.RestErr) {
+	dao := &users.User{
+		Email:    request.Email,
+		Password: crypto_utils.GetMd5(request.Password),
+	}
+	if err := dao.FindByEmailAndPassword(); err != nil {
+		return nil, err
+	}
+	return dao, nil
 }
 
 func (s *userService) GetUser(userId int64) (*users.User, *errors.RestErr) {

@@ -12,5 +12,5 @@ var (
 func StartApplication() {
 	mapUrls()
 	logger.Info("about to start the application ...")
-	_ = router.Run(":8080")
+	_ = router.Run("http://api.bookstore.com:8080")
 }
